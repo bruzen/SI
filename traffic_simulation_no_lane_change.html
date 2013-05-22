@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<script src="d3.js"></script>
+<style type="text/css"></style>
+<style type="text/css">
+rect.car{
+	background-color: black;
+	width: 30px;
+	height: 7px;
+	}
+rect.truck{
+	background-color: red;
+	width: 15px;
+	height: 7px;
+	}
+rect.motorcycle{
+	background-color: blue;
+	width: 10px;
+	height: 4px;
+	}
+</style></head>
+<body>
+<script>
+
+	 var vcount = 15
+		w = 500
+		h = 200
+		lanenumber = 5
+		cscale = d3.scale.linear().domain([0,1]).range([4,15])
+		mscale = d3.scale.linear().domain([0,1]).range([2,14])
+		tscale = d3.scale.linear().domain([0,1]).range([2,12])
+		xscale = d3.scale.linear().domain([0,1]).range([15,w-15])
+		vehicles = new Array()
+		yscalerange = new Array();
+	
+	for( var i = 0; i < lanenumber; i++){
+		yscalerange.push(15 + ((i / lanenumber) * (h-15)))}
+	
+	var	yscale = d3.scale.quantize().domain([0,1]).range(yscalerange)
+ 	
+ 	var svg = d3.select("body")
+ 			.append("svg")
+ 			.attr("width", w)
+ 			.attr("height", h);
+ 
+	function createVehicle(){
+		var typeValue = Math.floor(Math.random() * 3);
+		var type;
+		var speedScale;
+		var width;
+		var height;
+		var color;
+		var stroke;
+		var strokewidth;
+		
+	
+		switch(typeValue) {
+			case 0:
+				type = "car";
+				speedScale = cscale;
+				width = 20;
+				height = 8;
+				color = "red";
+				stroke = "black";
+				strokewidth = 2;
+				break;
+			case 1:
+				type = "truck";
+				speedScale = tscale;
+				width = 30;
+				height = 8;
+				color = "black";
+				stroke = "grey";
+				strokewidth = 2;
+				break;
+			case 2:
+				type = "motorcycle";
+				speedScale = mscale;
+				width = 10;
+				height = 4;
+				color = "blue";
+				stroke = "black";
+				strokewidth = 1;
+				break;
+		}
+		var speed = speedScale(Math.random());
+		return {"type" : type, "speed": speed, "width": width, "height": height, "color" : color, "stroke" : stroke, "stroke-width" : strokewidth, "status" : 0, "slowspeed" : speed};
+ 	};
+ 	
+ 	/*
+ 	Status meanings:
+ 		0 - moving normally
+ 		1 - slowing for car in front
+ 		2 - stopped (error checking so cars aren't on top of each other)
+ 	*/
+ 	
+ 	function createVehicles() {
+ 		var Vehicles = new Array()
+ 		for( var i = 0; i < vcount; i++){
+ 			Vehicles.push(createVehicle());
+ 		}
+ 		return Vehicles
+ 	};
+ 	
+ 	vehicles = createVehicles();
+ 	
+ 	svg.selectAll("rect")
+ 		.data(vehicles)
+ 		.enter()
+ 		.append("rect")
+ 		.attr("id", function(d, i){return "v" + i})
+ 		.attr("x", 10)
+ 		.attr("y", function(d){return yscale(Math.random())})
+ 		.attr("width", function(d){return d.width})
+ 		.attr("height", function(d){return d.height})
+ 		.style("color", function(d){return d.color})
+ 		.style("stroke", function(d){return d.stroke})
+ 		.style("stroke-width", function(d){return d.strokewidth})
+ 		.attr("fill", function(d){return d.color});
+ 	
+ 	function setSpeeds() {
+ 		svg.selectAll("rect").each(function(d,i){
+ 			var xpos = d3.select(this).attr("x");
+ 			var ypos = d3.select(this).attr("y");
+ 			var vwidth = d.width;
+ 			var speed;
+ 			switch(d.status){
+ 				case 0:
+ 					speed = parseFloat(d.speed);
+ 				case 1:
+ 					speed = parseFloat(d.slowspeed);
+ 				case 2:
+ 					speed = 0;
+ 			}
+ 				
+ 			var element = this;
+ 			var closeCars = svg.selectAll("rect[y='" + ypos + "']").filter(
+ 				function(){return this != element && parseFloat(xpos) < d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (2 * vwidth) + speed);});
+ 			
+ 			if(closeCars.empty()){
+ 				d.status = 0;
+ 				d.slowspeed = d.speed;}
+			if(!closeCars.filter(function(){return d3.select(this).attr("x") <= (parseInt(xpos) + vwidth + 3);}).empty()){
+ 				d.status = 2;}
+ 			else {
+ 				d.status = 1;
+ 				var slowSpeed = d.speed;
+ 				closeCars.each( function(d){	if(d.status == 0 && d.speed < slowSpeed) { slowSpeed = d.speed }
+ 											 	if(d.status == 1 && d.slowspeed < slowSpeed) { slowSpeed = d.slowspeed }});
+ 				d.slowspeed = slowSpeed;}
+ 			});}
+ 	
+ 	function deleteVehicles(){
+ 		for(var i = 0; i < vehicles.length; i++){
+ 			var id = "v" + i ;
+ 			var select = svg.select("rect#" + id);
+ 			if(select[0][0] != null){
+ 			if(parseFloat(select.attr("x")) >= w){
+ 				var vehicle = createVehicle();
+ 				vehicles[i] = vehicle
+ 				select.remove()
+ 				createNewVehicle(vehicle, id);
+ 			}}
+ 		}}
+ 	
+ 	function move(){
+ 		setSpeeds();
+  		svg.selectAll("rect").transition()
+ 			.attr("x", function(d){ 
+ 				if(d.status == 0){return parseFloat(d3.select(this).attr("x")) + d.speed}
+ 				if(d.status == 1){return parseFloat(d3.select(this).attr("x")) + d.slowspeed}
+ 				if(d.status == 2){return parseFloat(d3.select(this).attr("x"))}})
+ 			.duration(50);
+ 		deleteVehicles();
+ 	}
+ 	
+ 	function createNewVehicle(data, id){
+ 		svg.append("rect")
+ 			.datum(data)
+ 			.attr("id", id)
+ 			.attr("x", 10)
+ 			.attr("y", function(){return yscale(Math.random())})
+ 			.attr("width", function(d){return d.width})
+ 			.attr("height", function(d){return d.height})
+ 			.style("color", function(d){return d.color})
+ 			.style("stroke", function(d){return d.stroke})
+ 			.style("stroke-width", function(d){return d.strokewidth})
+ 			.attr("fill", function(d){return d.color});
+ 	}
+ 	
+ 	setInterval(move, 50)
+ 	
+</script>
+</body>
+ 		
+ 
+ 	
