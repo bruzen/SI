@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<style>
+	.alive{
+		fill: green;
+		stroke: black;
+		stroke-width: 2;
+	}
+	.dead{
+		fill: white;
+		stroke: white;
+		stroke-width: 2;
+	}
+</style>
+<body>
+<script src="d3.js"></script>
+<script src="class_transition.js"></script>
+<script>
+			
+	var ccx = 120, // cell count x
+		ccy = 30, // cell count y
+		cr = 4 // cell radius
+		del = 1000,
+		xs = d3.scale.linear().domain([0,ccx]).range([cr,ccx * cr * 3 + cr]),
+		ys = d3.scale.linear().domain([0,ccy]).range([cr,ccy * cr * 3 + cr]),
+		states = new Array()
+		prevStates = new Array()
+		
+	d3.range(ccx).forEach(function(x) { 
+		states[x] = new Array()
+		d3.range(ccy).forEach(function(y) {
+			states[x][y] = Math.random() > .8 ? true : false
+		})
+	})
+
+
+	function toGrid(states) {
+		var g = []			
+		for (x = 0; x < ccx; x++) {
+			for (y = 0; y < ccy; y++) {
+				g.push({"x": x, "y": y, "state": states[x][y]})
+			}
+		}				
+		return g
+	}				
+			
+	var vis = d3.select("body")
+		.append("svg:svg")
+		.attr("class", "vis")
+		.attr("width", window.width)
+		.attr("height", window.height)					
+	
+	var statesAsGrid = toGrid(states)
+	
+	vis.selectAll("circle")
+		.data(statesAsGrid)
+	  .enter().append("circle")
+		.attr("class", function(d) { return d.state ? "alive" : "dead" })
+		.attr("cx", function(d) { return xs(d.x) })
+		.attr("cy", function(d) { return ys(d.y) })
+		.attr("r", cr)
+		.on("click", function(d) { 
+			var This = d3.select(this)
+			if( d.state ){
+				d.state = false
+				states[d.x][d.y] = false
+				This.attr("class", "dead")
+				}
+			else{
+				d.state = true
+				states[d.x][d.y] = true
+				This.attr("class", "alive")
+			}
+			setTimeout(animateNoDelay(), 0)})
+	
+	
+	
+	function createNewGeneration(){
+		var nextGen = new Array()
+
+		for (x=0; x < ccx; x++){
+			nextGen[x] = new Array()
+			for (y=0; y < ccy; y++){
+				var thisState = states[x][y]
+				var neighbours = 0
+				for (xi = x - 1; xi < x + 2; xi++){
+					var xiSafe1 = xi < 0 ? ccx - 1 : xi
+					var xiSafe = xiSafe1 == ccx ? 0 : xiSafe1
+					for ( yi = y - 1; yi < y + 2; yi++){
+						var yiSafe1 = yi < 0 ? ccy - 1 : yi
+						var yiSafe = yiSafe1 == ccy ? 0 : yiSafe1
+						if( !(y == yiSafe && x == xiSafe)){
+							neighbours += states[xiSafe][yiSafe] ? 1 : 0
+						}
+					}
+				}
+	
+				var nextState = false
+	
+				if(thisState){ 
+					nextState = neighbours == 2 || neighbours == 3 ? true : false
+				}
+				else{
+					nextState = neighbours == 3 ? true : false
+				}
+	
+				nextGen[x][y] = nextState
+			}
+		}
+		return nextGen
+	}
+	
+	var currentState = false
+	
+	function updateState(selection){
+		currentState = selection.data().state;}
+	
+	function animate() {
+		prevStates = states;
+		states = createNewGeneration();
+		d3.selectAll("circle")
+			.data(toGrid(states))
+		  	.call(updateState)
+		  .transition()
+		  	.classTransition(function(){return currentState ? "alive" : "dead"})
+ 			.each("end", function(d) {
+// 				if( prevStates[d.x][d.y] != states[d.x][d.y] ){
+// 					if(states[d.x][d.y]){
+// 						// vis.selectAll("rect.#t" + d.x + "" + d.y)
+// // 							.data(d)
+// // 							.enter()
+// // 							.append("rect")
+// // 							.attr("id", "t" + d.x + "" + d.y)
+// // 							.attr("x", function(d) { return xs(d.x) })
+// // 							.attr("y", function(d) { return ys(d.y) })
+// // 							.attr("width", 0)
+// // 							.attr("opacity", 0.8)
+// // 							.attr("fill", "red")
+// // 							.transition()
+// // 							.attr("r", cr * 3)
+// // 							.attr("opacity", 0)
+// // 							.attr("fill", "green")
+// // 							.each("end", function(){ d3.select(this).remove()})
+// // 							.duration( del / 4 )
+// 						}
+// 					}
+					d3.select(this).attr("class", function(d) { return d.state ? "alive" : "dead" });
+				})
+			.delay(del)
+			.duration(0);
+	}
+	
+	function animateNoDelay() {
+		d3.selectAll("circle")
+			.data(toGrid(states))
+		  .transition()
+			.attr("class", function(d) { return d.state ? "alive" : "dead" })
+			.duration(0)
+	}
+	
+	setInterval("animate()", del)
+  
+  
+  // function animate() {
+// 		prevStates = states;
+// 		states = createNewGeneration();
+// 		d3.selectAll("circle")
+// 			.data(toGrid(states))
+// 		  .transition()
+// 			.attr("class", function(d) { return d.state ? "alive" : "dead" })
+// 			.each("end", function(d) {
+// 				if( prevStates[d.x][d.y] != states[d.x][d.y] ){
+// 					if(states[d.x][d.y]){
+// 						vis.selectAll("circle.#t" + d.x + "" + d.y)
+// 							.data(d)
+// 							.enter()
+// 							.append("circle")
+// 							.attr("id", "t" + d.x + "" + d.y)
+// 							.attr("cx", function(d) { return xs(d.x) })
+// 							.attr("cy", function(d) { return ys(d.y) })
+// 							.attr("r", 0)
+// 							.attr("opacity", 0.8)
+// 							.attr("fill", "red")
+// 							.transition()
+// 							.attr("r", cr * 3)
+// 							.attr("opacity", 0)
+// 							.attr("fill", "green")
+// 							.each("end", function(){ d3.select(this).remove()})
+// 							.duration( del / 4 )
+// 						}
+// 					}
+// 				})
+// 			.delay(del)
+// 			.duration(0);
+// 	}  
+    		
+		
+
+</script>
+</body>
+</head>

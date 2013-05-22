@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head><style>
+.blue_implosion{
+	fill: blue;
+	r: 500;
+	opacity: 0;}
+.green_implosion{
+	fill: green;
+	r: 500;
+	opacity: 0;}
+.blue_explosion{
+	fill: blue;
+	r: 0;
+	opacity: 0.6;}
+.green_explosion{
+	fill: green;
+	r: 0;
+	opacity: 0.6;}
+.rect {
+	fill: red;}
+.newrect{
+	fill: blue;}
+</style></head>
+<body>
+<script src="d3.js"></script>
+<script src="class_transition.js"></script>
+<script>
+
+	var dataset = [ 10, 20 ];
+	var w = 1000;
+	var h = 500;
+	
+	var xScale = d3.scale.linear().domain([0, 50]).range([10, w - 10]);
+	var yScale = d3.scale.linear().domain([0, 50]).range([10, h-10]);
+
+	var svg = d3.select("body").append("svg:svg")
+				.attr("width", w)
+				.attr("height", h);
+	
+	function duplicateGreen(element){
+		return [ {"data": element, "color" : "blue", "type": "explosion"}, {"data": element, "color" : "green", "type": "implosion"}];};
+	
+	svg.selectAll("rect")
+		.data(dataset)
+		.enter()
+		.append("rect")
+		.attr("x", function(d) { return xScale(d)})
+		.attr("y", function(d) { return yScale(d)})
+		.attr("width", function(i) { return (i + 1) * 4 })
+		.attr("height", function(i) { return (i+1) * 2})
+		.attr("class", "rect")
+		.transition()
+		.attr("x", function(d) { return xScale(d) + 300 })
+		.attr("y", function(d) { return yScale(d) + 150})
+		.each("end", function() {
+					d3.select(this).transition()
+						.classTransition("newrect")
+						.each("end", function(){ d3.select(this).attr("class", "newrect") });
+					
+					svg.selectAll("circle")
+						.data(d3.merge(dataset.map(duplicateGreen)))
+						.enter()
+						.append("circle")
+						.attr("cx", function(d,i) { return xScale(d.data) + 300 + ((i + 1) * 20)})
+						.attr("cy", function(d,i) { return yScale(d.data) + 150 + ((i + 1) * 10)})
+						.attr("fill", function(d) {return d.color; })
+						.attr("r", function(d) { return d.type == "implosion" ? 500 : 0;})
+						.attr("opacity", function(d) { return d.type == "implosion" ? 0 : 0.6;})
+						.transition()
+						.attr("r", function(d) { return d.type != "implosion" ? 500 : 0;})
+						.attr("opacity", function(d) { return d.type != "implosion" ? 0 : 0.6;})
+						.each("end", function() { d3.select(this).remove()})
+						.delay(function(d) { return d.type == "implosion" ? 0 : 700;})
+						.duration(1000);
+					// setTimeout( function(){
+// 					svg.selectAll("circle")
+// 						.data(dataset)
+// 						.enter()
+// 						.append("circle")
+// 						.attr("cx", function(d,i) { return xScale(d) + 300 + ((i + 1) * 20)})
+// 						.attr("cy", function(d,i) { return yScale(d) + 150 + ((i + 1) * 10)})
+// 						.attr("r", function(i) { return (i + 1) / 2 })
+// 						.attr("fill", "green")
+// 						.attr("opacity", 0.6)
+// 						.transition()
+// 						.attr("r", 500)
+// 						.attr("opacity", 0)
+// 						.each("end", function() { d3.select(this).remove()})
+// 						.duration(1000);
+// 						}, 1000);
+				})
+		.delay(1000)
+		.duration(500);
+
+</script>
+</body>
+</html> 
