@@ -23,11 +23,11 @@ rect.motorcycle{
 <body>
 <script>
 
-	 var vcount = 15
-		w = 500
+	 var vcount = 25
+		w = 750
 		h = 200
-		lanenumber = 8
-		duration = 100
+		lanenumber = 7
+		duration = 200
 		speedlimit = 15
 		cscale = d3.scale.linear().domain([0,1]).range([speedlimit - 7,speedlimit + 3])
 		mscale = d3.scale.linear().domain([0,1]).range([speedlimit - 6,speedlimit + 2])
@@ -47,7 +47,7 @@ rect.motorcycle{
  			.attr("height", h);
  
 	function createVehicle(){
-		var typeValue = Math.floor(Math.random() * 5);
+		var typeValue = d3.scale.threshold.domain([0.6, 0.8]).range([0,1,2])(Math.random());
 		var type;
 		var speedScale;
 		var width;
@@ -57,10 +57,8 @@ rect.motorcycle{
 		var strokewidth;
 		
 	
-		switch(typeValue) {
-			case 2:
-			case 3:
-			case 4:
+		switch(typeValue) {//we want 3/5ths cars, and 1/5th each trucks and motorcycles
+			case 0:
 				type = "car";
 				speedScale = cscale;
 				width = 20;
@@ -78,7 +76,7 @@ rect.motorcycle{
 				stroke = "grey";
 				strokewidth = 2;
 				break;
-			case 0:
+			case 2:
 				type = "motorcycle";
 				speedScale = mscale;
 				width = 10;
@@ -90,14 +88,18 @@ rect.motorcycle{
 		}
 		var speed = speedScale(Math.random());
 		var lane = Math.floor(Math.random() * lanenumber)
-		return {"type" : type, "speed": speed, "width": width, "height": height, "color" : color, "stroke" : stroke, "stroke-width" : strokewidth, "status" : 0, "slowspeed" : speed, "lane" : lane};
+		return {"type" : type, "speed": speed, "width": width, 
+				"height": height, "color" : color, "stroke" : stroke, 
+				"stroke-width" : strokewidth, "status" : 0, 
+				"slowspeed" : speed, "lane" : lane, "currentspeed" : speed, "acceleration" : 3};
  	};
  	
  	/*
  	Status meanings:
  		0 - moving normally
- 		1 - slowing for car in front
+ 		1 - slowed for car in front
  		2 - stopped (error checking so cars aren't on top of each other)
+ 		3 - changing lanes
  	*/
  	
  	function createVehicles() {
@@ -115,7 +117,7 @@ rect.motorcycle{
  		.enter()
  		.append("rect")
  		.attr("id", function(d, i){return "v" + i})
- 		.attr("x", 10)
+ 		.attr("x", -35)
  		.attr("y", function(d){return yscale(d.lane)})
  		.attr("lane", function(d){return d.lane})
  		.attr("width", function(d){return d.width})
@@ -127,30 +129,32 @@ rect.motorcycle{
  	
  	function setSpeeds() {
  		svg.selectAll("rect").each(function(d,i){
- 			var xpos = d3.select(this).attr("x");
- 			var ypos = yscale(d.lane);
- 			var vwidth = d.width;
- 			var speed;
+ 			var xpos = d3.select(this).attr("x");//x-position of the vehicle
+ 			var vwidth = d.width;//vehicle width
+ 			var speed;//current vehicle speed
  			switch(d.status){
  				case 0:
+ 				case 2:
  					speed = parseFloat(d.speed);
  				case 1:
  					speed = parseFloat(d.slowspeed);
- 				case 2:
- 					speed = 0;
  			}
  				
  			var element = this;
+ 			//cars that are close enough to need to start slowing down for
  			var closeCars = svg.selectAll("rect[lane='" + d.lane + "']").filter(
- 				function(){return this != element && parseFloat(xpos) < d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (2 * vwidth) + speed);});
- 			
- 			if(closeCars.empty()){
+ 				function(){return this != element && parseFloat(xpos) < d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (3 * vwidth) + (3 * speed));});
+ 			//if there are no cars nearby move normally
+ 			if(kindaCloseCars.empty()){
  				d.status = 0;
  				d.slowspeed = d.speed;}
+			//if you are on top of a car, error check to revert this
 			else if(!closeCars.filter(function(){return d3.select(this).attr("x") <= (parseInt(xpos) + vwidth + 3);}).empty()){
  				d.status = 2;}
+ 			//if there are cars around you...
  			else {
- 				upCars = svg.selectAll("rect[lane='"  + (d.lane + 1) + "']").filter(
+ 				//...check if there is space in the lane above you...
+ 				var upCars = svg.selectAll("rect[lane='"  + (d.lane + 1) + "']").filter(
 					function(){
 						var select = d3.select(this);
 						var data = select.datum();
@@ -165,7 +169,8 @@ rect.motorcycle{
 								selectspeed = 0;
 						}
 						return parseFloat(xpos) - 2 * selectwidth - selectspeed <= d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (2 * vwidth) + speed);});
-				downCars = svg.selectAll("rect[lane='" + (d.lane - 1) + "']").filter(
+				//...or in the lane below you
+				var downCars = svg.selectAll("rect[lane='" + (d.lane - 1) + "']").filter(
 					function(){
 						var select = d3.select(this);
 						var data = select.datum();
@@ -173,13 +178,13 @@ rect.motorcycle{
 						var selectspeed;
 						switch(data.status){
 							case 0:
+							case 2:
 								selectspeed = parseFloat(data.speed);
 							case 1:
 								selectspeed = parseFloat(data.slowspeed);
-							case 2:
-								selectspeed = 0;
 						}
 						return parseFloat(xpos) - 2 * selectwidth - 2 * selectspeed <= d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (2 * vwidth) + speed);});
+				//if there is space in either of the lanes next to you move to that lane
 				if(upCars.empty() && d.lane + 1 != lanenumber){
 					d.status = 3;
 					d.slowspeed = d.speed;
@@ -190,11 +195,14 @@ rect.motorcycle{
 					d.slowspeed = d.speed;
 					d.lane -= 1
 					d3.select(this).attr("lane", function(){return d.lane})}
+				//otherwise match the speed of the car ahead of you
 				else{
 					d.status = 1;
 					var slowSpeed = d.speed;
-					closeCars.each( function(d){	if(d.status == 0 && d.speed < slowSpeed) { slowSpeed = d.speed }
-													if(d.status == 1 && d.slowspeed < slowSpeed) { slowSpeed = d.slowspeed }});
+					closeCars.each( function(d){	
+						if(d.status == 0 && parseFloat(d.speed) < slowSpeed) { slowSpeed = d.speed }
+						else if(d.status == 1 && parseFloat(d.slowspeed) < slowSpeed) { slowSpeed = d.slowspeed }
+						else if(d.status == 4  && parseFloat(d.slowingscale(d.disttonextcar)) < slowSpeed) { slowSpeed = parseFloat(d.slowingscale(d.disttonextcar))}});
 					d.slowspeed = slowSpeed;}}
  			});}
  	
@@ -217,7 +225,7 @@ rect.motorcycle{
  			.attr("x", function(d){ 
  				if(d.status == 0){return parseFloat(d3.select(this).attr("x")) + d.speed}
  				if(d.status == 1){return parseFloat(d3.select(this).attr("x")) + d.slowspeed}
- 				if(d.status == 2 || d.status == 3 ){return parseFloat(d3.select(this).attr("x"))}})
+ 				if(d.status == 2 || d.status == 3 ){return parseFloat(d3.select(this).attr("x"))}
  			.attr("y", function(d){return yscale(d.lane)})
  			.duration(duration)
  			.each("end", deleteVehicles());
@@ -227,7 +235,7 @@ rect.motorcycle{
  		svg.append("rect")
  			.datum(data)
  			.attr("id", id)
- 			.attr("x", 10)
+ 			.attr("x", -35)
  			.attr("y", function(d){return yscale(d.lane)})
  			.attr("lane", function(d){return d.lane})
  			.attr("width", function(d){return d.width})
