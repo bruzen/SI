@@ -27,7 +27,7 @@ rect.motorcycle{
 		w = 750
 		h = 200
 		lanenumber = 7
-		duration = 200
+		duration = 50
 		speedlimit = 15
 		cscale = d3.scale.linear().domain([0,1]).range([speedlimit - 7,speedlimit + 3])
 		mscale = d3.scale.linear().domain([0,1]).range([speedlimit - 6,speedlimit + 2])
@@ -47,7 +47,7 @@ rect.motorcycle{
  			.attr("height", h);
  
 	function createVehicle(){
-		var typeValue = d3.scale.threshold.domain([0.6, 0.8]).range([0,1,2])(Math.random());
+		var typeValue = d3.scale.threshold().domain([0.6, 0.8]).range([0,1,2])(Math.random());
 		var type;
 		var speedScale;
 		var width;
@@ -134,10 +134,11 @@ rect.motorcycle{
  			var speed;//current vehicle speed
  			switch(d.status){
  				case 0:
- 				case 2:
  					speed = parseFloat(d.speed);
  				case 1:
  					speed = parseFloat(d.slowspeed);
+ 				case 2:
+ 					speed = 0
  			}
  				
  			var element = this;
@@ -145,7 +146,7 @@ rect.motorcycle{
  			var closeCars = svg.selectAll("rect[lane='" + d.lane + "']").filter(
  				function(){return this != element && parseFloat(xpos) < d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (3 * vwidth) + (3 * speed));});
  			//if there are no cars nearby move normally
- 			if(kindaCloseCars.empty()){
+ 			if(closeCars.empty()){
  				d.status = 0;
  				d.slowspeed = d.speed;}
 			//if you are on top of a car, error check to revert this
@@ -178,10 +179,11 @@ rect.motorcycle{
 						var selectspeed;
 						switch(data.status){
 							case 0:
-							case 2:
 								selectspeed = parseFloat(data.speed);
 							case 1:
 								selectspeed = parseFloat(data.slowspeed);
+							case 2:
+								speed = 0
 						}
 						return parseFloat(xpos) - 2 * selectwidth - 2 * selectspeed <= d3.select(this).attr("x") && d3.select(this).attr("x") <= (parseFloat(xpos) + (2 * vwidth) + speed);});
 				//if there is space in either of the lanes next to you move to that lane
@@ -225,10 +227,10 @@ rect.motorcycle{
  			.attr("x", function(d){ 
  				if(d.status == 0){return parseFloat(d3.select(this).attr("x")) + d.speed}
  				if(d.status == 1){return parseFloat(d3.select(this).attr("x")) + d.slowspeed}
- 				if(d.status == 2 || d.status == 3 ){return parseFloat(d3.select(this).attr("x"))}
+ 				if(d.status == 2 || d.status == 3 ){return parseFloat(d3.select(this).attr("x"))}})
  			.attr("y", function(d){return yscale(d.lane)})
- 			.duration(duration)
- 			.each("end", deleteVehicles());
+ 			.duration(duration);
+ 		deleteVehicles();
  	}
  	
  	function createNewVehicle(data, id){
