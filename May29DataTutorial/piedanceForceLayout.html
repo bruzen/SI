@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<meta charset = "utf-8"> </meta>
+<title> Force Layout with Pies </title>
+
+<script type = "text/javascript"  src="http://d3js.org/d3.v3.min.js"></script> 
+
+<body>
+<script type = "text/javascript">
+
+var w = 960
+	h = 500
+
+d3.json("data/piedance.json", function(error, data) {
+
+
+svg = d3.select("body").append("svg")
+		.attr("width", w)
+		.attr("height", h)
+
+//we initialize the force layout
+var force = d3.layout.force()
+    .charge(-100)
+    .linkDistance(50)
+    .size([w, h]);
+
+//we add information about nodes and links
+force
+	.nodes(data)
+	.links([])
+	.start();
+
+//then we create svg objects for the nodes under group g
+var node = svg.selectAll(".node")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "node")
+      .call(force.drag)
+
+//we bind circles to these nodes
+  node.append("circle")
+      .attr("fill", function(d) {
+                        var returnColor;
+                         if (d.name === "Mark") { returnColor = "green";} 
+                         else if (d.name === "Kirsten") { returnColor = "red";}  
+                         else if (d.name === "Chaitanya") { returnColor = "blue";} 
+                         else if (d.name === "Nathan") { returnColor = "purple";} 
+                         else if (d.name === "Madigan") { returnColor = "pink";} 
+                         else if (d.name === "Brianna") { returnColor = "orange";} 
+                         else if (d.name === "Terry") { returnColor = "yellow";}               
+                        return returnColor;})
+      .attr("r", 8); //d3.scale.sqrt(
+
+//we bind text to these nodes
+  node.append("text")
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.name; });
+
+//the tick function updates the graph when someone drags a circle
+  force.on("tick", function() {
+    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  });
+
+;}) //from the d3.json function call
+</script>
+</body>
+
+</html>
