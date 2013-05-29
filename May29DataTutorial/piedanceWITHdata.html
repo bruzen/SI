@@ -7,7 +7,7 @@
 
 <body>
 <script type="text/javascript">
-var w = 960
+var w = 960 // declare variables for the w/h of the svg object
 	h = 500
 
 
@@ -19,17 +19,24 @@ var w = 960
 
 // declare the data
 data = [{"": null, "name": "Mark", "nopies": "4", "danceability": "10"}, {"": null, "name": "Kirsten", "nopies": "5", "danceability": "8"}, {"": null, "name": "Brianna", "nopies": "7", "danceability": "4"}, {"": null, "name": "Chaitanya", "nopies": "4", "danceability": "7"}, {"": null, "name": "Madigan", "nopies": "8", "danceability": "4"}, {"": null, "name": "Nathan", "nopies": "10", "danceability": "3"}, {"": null, "name": "Terry", "nopies": "10", "danceability": "10"}]
+//I've just copied and pasted in JSON data I converted from csv using python. 
+//not sure if you can just copy csv data straight in.
 
 //creating a linear scale for x and y
 
-//Xmax = d3.max(data, function(d) {return d.nopies;})
+Xmax = d3.max(data, function(d) {return +d.nopies;}) 
+/*we use the d3.max function to return us the maxiumum value of the nopies attribute
+of our data array. note that the + in front of d.nopies converts it from a string to a #
+*/
 Xscale = d3.scale.linear()
-Xscale.domain([0, 10])
+Xscale.domain([0, Xmax])
 Xscale.range([0,w-100])
+/* what we've done here is created a Xscale function that takes a number between 0 and 
+Xmax (10) as its argument and returns a number scaled to fit the width of the svg element*/
 
-//Ymax = d3.max(data, function(d) {return d.danceability;})
+Ymax = d3.max(data, function(d) {return +d.danceability;})
 Yscale = d3.scale.linear()
-Yscale.domain([0, 10])
+Yscale.domain([0, Ymax])
 Yscale.range([0,h-100])
 
 //creating the circles and binding them to data
@@ -42,7 +49,10 @@ var circles = svg.selectAll("circle")
 circles.attr("fill", "orange")
 			.attr("cx", function(d) {return Xscale(+d.nopies);})
 			.attr("cy", function(d) {return Yscale(+d.danceability);})
-			.attr("r", function(d) {return d.nopies;});
+			.attr("r", function(d) {return +d.nopies;});
+//so our x and y position are determined by number of pies that can be eaten and dance
+// skill level, respectively. and radius is determined by pies. 
+
 
 //creating text labels	
 			var text=svg.selectAll("text")
@@ -51,12 +61,11 @@ circles.attr("fill", "orange")
 				.append("text");
 				
 //modifying attributes of text labels based on data			
-			
 			text.attr("size", "4")
 			  .attr("x", function(d) {return Xscale(+d.nopies);}) //we give them the same positon 
 			.attr("y", function(d) {return Yscale(+d.danceability);}) // as the circles
-				.text(function(d) {return d["name"];})
-				.attr("text-anchor", "middle");
+				.text(function(d) {return d.name;})
+				.attr("text-anchor", "middle"); //this will align them nicely
 		
 </script>
 </body>
