@@ -1,1 +1,0 @@
-PlaySound(crowd_angry.ogg);
