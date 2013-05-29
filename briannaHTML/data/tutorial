@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html" charset="UTF-8"></meta>
+<title>TutorialJoin</title>
+<script type="text/javascript" src="d3.v3.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+var nums=[101,202,3,4,5,6,77,8,22,4,9,1,5];
+var svg=d3.select("body").append("svg")
+	.attr(width=500)
+	.attr(lenght=500);
+var circles = svg.selectAll("circle")
+	.data(nums)
+	.enter()
+	.append("circle");
+
+circles
+	.attr("cx", function(d) {return d})
+	.attr("cy", function(d) {return d}
+	.attr("r", function(d) {return d}
+	.attr("fill", "orange")
+	.attr("stroke", "blue")
+	.attr("stroke-weight", "5");
+	</script>
+</body>
+</html>

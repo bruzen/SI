@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset = "utf-8"> </meta>
+<title> Danceability and Pie Eating Comparision </title>
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"> </script>
+
+<body>
+<script type="text/javascript">
+var w = 960
+	h = 500
+
+// declare the data
+d3.csv("data/piedance.csv", function(error, data) {
+
+// create the svg object
+	var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+//creating a linear scale for x and y
+
+//Xmax = d3.max(data, function(d) {return d.nopies;})
+Xscale = d3.scale.linear()
+Xscale.domain([0, 10])
+Xscale.range([0,w-100])
+
+//Ymax = d3.max(data, function(d) {return d.danceability;})
+Yscale = d3.scale.linear()
+Yscale.domain([0, 10])
+Yscale.range([0,h-100])
+
+//creating the circles and binding them to data
+var circles = svg.selectAll("circle")
+			.data(data)
+			.enter()
+			.append("circle")
+
+//modifying the attributes of the circles based on data
+circles.attr("fill", "orange")
+			.attr("cx", function(d) {return Xscale(+d.nopies);})
+			.attr("cy", function(d) {return Yscale(+d.danceability);})
+			.attr("r", 5);
+
+//creating text labels	
+			var text=svg.selectAll("text")
+				.data(data)
+				.enter()
+				.append("text");
+				
+//modifying attributes of text labels based on data			
+			
+			text.attr("size", "4")
+			  .attr("x", function(d) {return Xscale(+d.nopies);}) //we give them the same positon 
+			.attr("y", function(d) {return Yscale(+d.danceability);}) // as the circles
+				.text(function(d) {return d["name"];})
+				.attr("text-anchor", "middle");
+;})
+		
+</script>
+</body>
+
+
+</html>

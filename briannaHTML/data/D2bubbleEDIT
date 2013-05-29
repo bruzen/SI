@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="utf-8">
+		<title>D2 Bubble Diagram: Policies</title>
+		<script type="text/javascript" src="http://alignedleft.com/content/3.tutorials/10.d3/d3/d3.v3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			
+			//Width and height (they will be used for the SVG canvas)
+			var w = 1000;
+			var h = 500;
+			
+			//Data (here is where we import some fun stuff)
+			d3.csv.parse("costs.csv", function(rows) {
+  doSomethingWithRows(rows);
+});
+
+function doSomethingWithRows(rows) {
+	//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			var circles = svg.selectAll("circle")
+			    .data(rows)
+			    .enter()
+			    .append("circle");
+			
+			circles.attr("fill", "blue")
+			.attr("cx", function(d) {return +d.mincost;})
+			.attr("cy", "50")
+			.attr("r", "5");
+
+  // do something with rows
+}
+			
+
+			
+
+		</script>
+	</body>
+</html>

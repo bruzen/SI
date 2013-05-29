@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="utf-8">
+		<title>D2 Bubble Diagram: Policies</title>
+		<script type="text/javascript" src="http://alignedleft.com/content/3.tutorials/10.d3/d3/d3.v3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			
+			//Data (here is where we import some fun stuff)
+data = [{"PolicyName": "Adult Education Subsidies", "maxcost": "300", "mincost": "160"}, {"PolicyName": "Agriculture Subsidies", "maxcost": "2800", "mincost": "0"}, {"PolicyName": "Airline Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Alcohol Law", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Alcohol Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Armed Police", "maxcost": "960", "mincost": "300"}, {"PolicyName": "Ban Sunday Shopping", "maxcost": "0", "mincost": "0"}, {"PolicyName": "BioFuel Subsidies", "maxcost": "400", "mincost": "5"}, {"PolicyName": "Border Controls", "maxcost": "280", "mincost": "10"}, {"PolicyName": "Bus Lanes", "maxcost": "640", "mincost": "100"}, {"PolicyName": "Bus Subsidies", "maxcost": "1552", "mincost": "125"}, {"PolicyName": "Carbon Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Car Emissions Limits", "maxcost": "80", "mincost": "0"}, {"PolicyName": "Car Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "CCTV Cameras", "maxcost": "720", "mincost": "400"}, {"PolicyName": "Child Benefit", "maxcost": "4320", "mincost": "400"}, {"PolicyName": "Childcare Provision", "maxcost": "1520", "mincost": "100"}, {"PolicyName": "Citizenship Tests", "maxcost": "50", "mincost": "10"}, {"PolicyName": "Clean Energy Subsidies", "maxcost": "1560", "mincost": "590"}, {"PolicyName": "Clean Fuel Subsidy", "maxcost": "320", "mincost": "120"}, {"PolicyName": "Community Policing", "maxcost": "320", "mincost": "100"}, {"PolicyName": "Consumer Rights", "maxcost": "8", "mincost": "5"}, {"PolicyName": "Corporation Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Creationism", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Curfews", "maxcost": "200", "mincost": "80"}, {"PolicyName": "Death Penalty", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Detention Without Trial", "maxcost": "2", "mincost": "2"}, {"PolicyName": "Disability benefit", "maxcost": "420", "mincost": "50"}, {"PolicyName": "Faith School Subsidies", "maxcost": "1160", "mincost": "180"}, {"PolicyName": "Foreign Aid", "maxcost": "2490", "mincost": "0"}, {"PolicyName": "Free Bus Passes", "maxcost": "800", "mincost": "220"}, {"PolicyName": "Free Eye Tests", "maxcost": "240", "mincost": "200"}, {"PolicyName": "Free School Meals", "maxcost": "320", "mincost": "210"}, {"PolicyName": "Gambling", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Gated Communities", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Handgun Laws", "maxcost": "4", "mincost": "0"}, {"PolicyName": "Hybrid Cars Initiative", "maxcost": "200", "mincost": "5"}, {"PolicyName": "ID Cards", "maxcost": "1200", "mincost": "100"}, {"PolicyName": "Import Tariffs", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Income Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Inheritance Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Intelligence Services", "maxcost": "1600", "mincost": "900"}, {"PolicyName": "Internet Censorship", "maxcost": "400", "mincost": "250"}, {"PolicyName": "Internet Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Jury Trial", "maxcost": "200", "mincost": "200"}, {"PolicyName": "Labour Laws", "maxcost": "160", "mincost": "100"}, {"PolicyName": "Legal Aid", "maxcost": "80", "mincost": "10"}, {"PolicyName": "Legalize Prostitution", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Luxury Goods Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Married Tax Allowance", "maxcost": "5200", "mincost": "100"}, {"PolicyName": "Maternity Leave", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Micro-Generation Grants", "maxcost": "1100", "mincost": "100"}, {"PolicyName": "Military Spending", "maxcost": "15600", "mincost": "2300"}, {"PolicyName": "National Monorail System", "maxcost": "2320", "mincost": "2100"}, {"PolicyName": "Mortgage Tax Relief", "maxcost": "920", "mincost": "200"}, {"PolicyName": "Narcotics", "maxcost": "0", "mincost": "0"}, {"PolicyName": "National Service", "maxcost": "80", "mincost": "100"}, {"PolicyName": "Organ Donation", "maxcost": "8", "mincost": "10"}, {"PolicyName": "Organic Farming Subsidy", "maxcost": "800", "mincost": "190"}, {"PolicyName": "Petrol Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Phone Tapping", "maxcost": "40", "mincost": "10"}, {"PolicyName": "Plastic Bag Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Police Force", "maxcost": "2320", "mincost": "300"}, {"PolicyName": "Pollution Controls", "maxcost": "24", "mincost": "10"}, {"PolicyName": "Prisoner Tagging", "maxcost": "6.4", "mincost": "4"}, {"PolicyName": "Prisons", "maxcost": "1920", "mincost": "100"}, {"PolicyName": "Property Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Public Libraries", "maxcost": "800", "mincost": "50"}, {"PolicyName": "Racial Profiling", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Rail Subsidies", "maxcost": "4800", "mincost": "500"}, {"PolicyName": "Recycling", "maxcost": "240", "mincost": "40"}, {"PolicyName": "Road Building", "maxcost": "4100", "mincost": "100"}, {"PolicyName": "Rural Development Grants", "maxcost": "400", "mincost": "100"}, {"PolicyName": "Sales Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Satellite Road Pricing", "maxcost": "2000", "mincost": "2500"}, {"PolicyName": "Subsidised School Buses", "maxcost": "520", "mincost": "250"}, {"PolicyName": "School Prayers", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Science Funding", "maxcost": "520", "mincost": "85"}, {"PolicyName": "Small Business Grants", "maxcost": "4700", "mincost": "100"}, {"PolicyName": "Speed Cameras", "maxcost": "8", "mincost": "1"}, {"PolicyName": "State Health Service", "maxcost": "14400", "mincost": "3000"}, {"PolicyName": "State Housing", "maxcost": "6400", "mincost": "1000"}, {"PolicyName": "State Pensions", "maxcost": "14000", "mincost": "2500"}, {"PolicyName": "State Schools", "maxcost": "7360", "mincost": "1000"}, {"PolicyName": "Stem Cell Research", "maxcost": "160", "mincost": "20"}, {"PolicyName": "Tax Shelters", "maxcost": "400", "mincost": "100"}, {"PolicyName": "Technology Colleges", "maxcost": "670", "mincost": "185"}, {"PolicyName": "Technology Grants", "maxcost": "3000", "mincost": "450"}, {"PolicyName": "Telecommuting Initiative", "maxcost": "500", "mincost": "110"}, {"PolicyName": "Tobacco Tax", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Toll Roads", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Unemployed Benefit ", "maxcost": "5440", "mincost": "500"}, {"PolicyName": "University Grants", "maxcost": "2600", "mincost": "200"}, {"PolicyName": "Welfare Fraud Dept", "maxcost": "0", "mincost": "0"}, {"PolicyName": "Winter Fuel Subsidy", "maxcost": "2000", "mincost": "500"}, {"PolicyName": "Youth Club Subsidies", "maxcost": "220", "mincost": "12"}, {"PolicyName": "Green Home Standards", "maxcost": "1560", "mincost": "590"}
+]
+
+//Width and height (they will be used for the SVG canvas)
+			var w = 10000;
+			var h = 1000;
+
+<svg width=w height=h>				
+	//Create SVG element
+
+<g>
+			var circles = svg.selectAll("circle")
+			    .data(data)
+			    .enter()
+			    .append("circle");
+			
+			circles.attr("fill", "orange")
+			.attr("cx", function(d,i) {return i* (w/data.length);})
+			.attr("cy", function(d,i) {return h/4})
+			.attr("r", function(d) {return 0.01*parseInt(d["maxcost"]);});
+<			
+		var circles2 = svg.selectAll("circle")
+			    .data(data)
+			    .enter()
+			    .append("circle");
+			
+			circles2.attr("fill", "blue")
+			.attr("cx", function(d,i) {return i*100;})
+			.attr("cy", function(d,i) {return 500;})
+			.attr("r", function(d) {return 0.01*parseInt(d["mincost"]);});
+			
+			var text=svg.selectAll("text")
+				.data(data)
+				.enter()
+				.append("text");
+				
+			
+			text.attr("size", "5")
+			   .attr("x", function(d, i) {return i * (w / data.length);})
+				.attr("y", function(d,i) {return h/2 ;})
+				.text(function(d) {return d["PolicyName"];});
+
+			
+
+			
+</svg>
+		</script>
+	</body>
+</html>

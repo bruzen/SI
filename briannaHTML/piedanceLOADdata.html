@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset = "utf-8"> </meta>
+<title> Danceability and Pie Eating Comparision </title>
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"> </script>
+
+<body>
+<script type="text/javascript">
+var w = 960
+	h = 500
+
+/* my stumbling block with importing data was not understanding the function 
+part. i would try to create a variable data = d3.json("file.json") 
+			but d3 doesn't work that way. you do everything inside the d3.json or d3.csv
+			or etc brackets. the function you define: fuction(error, data)
+			the first argument, error, will be tripped if the data doesn't parse correctly
+			generally i see it as a "standard" argument in these kinds of functions 
+			in other d3 examples.
+			the "data" arugment allows you to reference your data in any other method you 
+			nest inside the function. 
+			note that this data is your entire array/list/whatever
+
+				if you want to access a specific attribute, for JSON or csv you type 
+				data.attribute 
+			where data is the argument you used in the function and attribute is the field
+			 name (like PolicyName or nopies etc.). you could also type data["attribute"] 
+			 but that takes longer.
+			 
+			 a pro tip: write out the ending ;} for the data function RIGHT AWAY and just
+			 just write inside the brackets. it gets very confusing to have to figure out
+			 if you're missing a bracket.
+			*/
+
+
+//Anyways, let's say what this function is actually going to do.
+//Here's the interesting part - you can pretty much do whatever you want. You don't have
+//to reference 'data' for everything. 
+// declare the data
+d3.json("data/piedance.json", function(error, data) {
+
+// create the svg object
+	var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+//creating a linear scale for x and y
+
+Xmax = d3.max(data, function(d) {return +d.nopies;})
+Xscale = d3.scale.linear()
+Xscale.domain([0, Xmax])
+Xscale.range([0,w-100])
+
+Ymax = d3.max(data, function(d) {return +d.danceability;})
+Yscale = d3.scale.linear()
+Yscale.domain([0, Ymax])
+Yscale.range([0,h-100])
+
+//creating the circles and binding them to data
+var circles = svg.selectAll("circle")
+			.data(data)
+			.enter()
+			.append("circle")
+
+//modifying the attributes of the circles based on data
+circles.attr("fill", "orange")
+			.attr("cx", function(d) {return Xscale(+d.nopies);})
+			.attr("cy", function(d) {return Yscale(+d.danceability);})
+			.attr("r", 5);
+
+//creating text labels	
+			var text=svg.selectAll("text")
+				.data(data)
+				.enter()
+				.append("text");
+				
+//modifying attributes of text labels based on data			
+			
+			text.attr("size", "4")
+			  .attr("x", function(d) {return Xscale(+d.nopies);}) //we give them the same positon 
+			.attr("y", function(d) {return Yscale(+d.danceability);}) // as the circles
+				.text(function(d) {return d["name"];})
+				.attr("text-anchor", "middle");
+;})
+		
+</script>
+</body>
+
+
+</html>

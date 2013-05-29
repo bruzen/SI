@@ -1,0 +1,9 @@
+[
+	{"paperCount": 1, "PMIDs": [20626970], "authorA": 79, "authorB": 80}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 81, "authorB": 82}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 81, "authorB": 83}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 81, "authorB": 84}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 82, "authorB": 83}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 82, "authorB": 84}, 
+	{"paperCount": 1, "PMIDs": [20492581], "authorA": 83, "authorB": 84}
+]
