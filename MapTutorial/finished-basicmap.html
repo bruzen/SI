@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<style>
+</style>
+</head>
+<body>
+<script type="text/JavaScript">
+	var w = 1000;
+	var h = 500;
+	
+	var svg = d3.select("body").append("svg")
+		.attr("width", w)
+		.attr("height", h);
+	
+	var projection = d3.geo.albersUsa();
+	
+	var path = d3.geo.path()
+		.projection(projection);
+		
+	d3.json("us-topo.json", function(us) {
+		console.log(us);
+		
+		svg.selectAll("path")
+			.data(topojson.feature(us, us.objects.counties).features)
+			.enter()
+			.append("path")
+			.attr("d", path);
+	});
+</script>
+</body>
+</html>
