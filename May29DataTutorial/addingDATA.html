@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8"> 
+		<title>Demo: Adding Data</title>
+		<script type="text/javascript" src="http://alignedleft.com/content/3.tutorials/10.d3/d3/d3.v3.js"></script>
+		<style type="text/css">
+				
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			
+			//Width and height (they will be used for the SVG canvas)
+			var w = 960;
+			var h = 500;
+			
+			//Importing data
+			d3.json("data/costsdept.json", function(error, data)
+			
+			//my stumbling block with importing data was not understanding the function 
+			// part
+			
+			//i would try to create a variable data = d3.json("file.json") 
+			//but d3 doesn't work that way. you do everything inside the d3.json or d3.csv
+			//or etc brackets. the function you define: fuction(error, data) [not sure wht
+			//the error refers to, though] allows you to reference your data (in this case
+			//using the variable data), in any other method you nest inside here. 
+			//note that this data is your entire array/list/whatever
+					//here's what our data is referring to 			
+					//data = [{"PolicyName": "Adult Education Subsidies", "maxcost": "300", "mincost": "160"}, ...
+					// etc. etc. ]
+			//if you want to access a specific attribute, for JSON you type data.attribute 
+			//where attribute is the field name (like PolicyName). For csv i think it's
+			//data["PolicyName"] but I could be wrong. 
+
+
+//Anyways, let's say what this function is actually going to do.
+//Here's the interesting part - you can pretty much do whatever you want. You don't have
+//to reference json for everything. 
+	{
+	//We create the SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w+100)
+						.attr("height", h+100);
+	//We create circles and bind them to our data
+			var circles = svg.selectAll("circle")
+			    .data(data) //so here we're calling on our data 
+			    .enter()
+			    .append("circle");
+			
+	//We change the attributes of our circle in light of this data		
+			circles.attr("fill", "pink")
+			.attr("cx", function(d,i) {return i * (w / data.length) +50;}) 
+				//and here we're calling on an attribute of our data
+				// what i'm doing here is trying to space out the circles based on the size
+				//of the svg canvas
+			.attr("cy", function(d,i) {return i* (h/data.length) +50 ;})
+			.attr("r", function(d) {return 0.01*parseInt(d["maxcost"]);});
+	
+	//We add text		
+			var text=svg.selectAll("text")
+				.data(data)
+				.enter()
+				.append("text");
+				
+	//We give the text the same position attributes as the circle, so they'll be aligned
+	//In d3, whatever is coded last is drawn on top		
+			text.attr("size", "4")
+			   .attr("x", function(d, i) {return i * (w / data.length) +50;})
+				.attr("y", function(d,i) {return i* (h/data.length) +50 ;})
+				.text(function(d) {return (d["PolicyName"] + " ("+d["maxcost"]+")");})
+				.attr("text-anchor", "middle");
+
+	} //we close the brackets for this function	
+	) // then we close brackets for the d3.json function
+	; //then the requisite semi-colon	
+
+			
+
+		</script>
+	</body>
+</html>

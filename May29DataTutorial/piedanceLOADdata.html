@@ -10,6 +10,32 @@
 var w = 960
 	h = 500
 
+/* my stumbling block with importing data was not understanding the function 
+part. i would try to create a variable data = d3.json("file.json") 
+			but d3 doesn't work that way. you do everything inside the d3.json or d3.csv
+			or etc brackets. the function you define: fuction(error, data)
+			the first argument, error, will be tripped if the data doesn't parse correctly
+			generally i see it as a "standard" argument in these kinds of functions 
+			in other d3 examples.
+			the "data" arugment allows you to reference your data in any other method you 
+			nest inside the function. 
+			note that this data is your entire array/list/whatever
+
+				if you want to access a specific attribute, for JSON or csv you type 
+				data.attribute 
+			where data is the argument you used in the function and attribute is the field
+			 name (like PolicyName or nopies etc.). you could also type data["attribute"] 
+			 but that takes longer.
+			 
+			 a pro tip: write out the ending ;} for the data function RIGHT AWAY and just
+			 just write inside the brackets. it gets very confusing to have to figure out
+			 if you're missing a bracket.
+			*/
+
+
+//Anyways, let's say what this function is actually going to do.
+//Here's the interesting part - you can pretty much do whatever you want. You don't have
+//to reference 'data' for everything. 
 // declare the data
 d3.json("data/piedance.json", function(error, data) {
 
@@ -22,14 +48,14 @@ d3.json("data/piedance.json", function(error, data) {
 
 //creating a linear scale for x and y
 
-//Xmax = d3.max(data, function(d) {return d.nopies;})
+Xmax = d3.max(data, function(d) {return +d.nopies;})
 Xscale = d3.scale.linear()
-Xscale.domain([0, 10])
+Xscale.domain([0, Xmax])
 Xscale.range([0,w-100])
 
-//Ymax = d3.max(data, function(d) {return d.danceability;})
+Ymax = d3.max(data, function(d) {return +d.danceability;})
 Yscale = d3.scale.linear()
-Yscale.domain([0, 10])
+Yscale.domain([0, Ymax])
 Yscale.range([0,h-100])
 
 //creating the circles and binding them to data

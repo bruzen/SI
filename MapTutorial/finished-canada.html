@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<style>
+	.class0 { fill: rgb(254, 224, 210); }
+	.class1 { fill: rgb(252, 146, 114); }
+	.class2 { fill: rgb(222, 45, 38); }
+	
+	.province {
+		stroke: #000;
+		stroke-linejoin: round;
+	}
+</style>
+</head>
+<body>
+<script>
+	var w = 800;
+	var h = 600;
+	
+	var svg = d3.select("body").append("svg")
+		.attr("width", w)
+		.attr("height", h);
+		
+	var projection = d3.geo.azimuthalEquidistant()
+		.rotate([100, -45])
+		.center([5, 20])
+		.scale(800)
+		.translate([w/2, h/2]);
+		
+	var path = d3.geo.path()
+		.projection(projection);
+		
+	var quantize = d3.scale.quantize()
+		.domain([0, 102000])
+		.range(d3.range(3).map(function(d, i) { return "class" + i; }));
+		
+	var immByProv = d3.map();
+	
+	queue()
+		.defer(d3.json, "canada.json")
+		.defer(d3.csv, "immigration.csv", function(d) { immByProv.set(d.Geography, +d.Total); })
+		.await(loaded);
+		
+	function loaded(error, can) {
+		console.log(can);
+		
+		svg.append("g")
+			.attr("class", "province")
+			.selectAll("path")
+			.data(can.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("class", function(d) { return quantize(immByProv.get(d.properties.NAME)); });
+	};
+</script>
+</body>
+</html>
