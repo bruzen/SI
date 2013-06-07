@@ -1,0 +1,98 @@
+Policy Name,Department,mincost,maxcost
+Adult Education Subsidies,PUBLICSERVICES,160,300
+Agriculture Subsidies,ECONOMY,0,2800
+Airline Tax,TAX,0,0
+Alcohol Law,LAWANDORDER,0,0
+Alcohol Tax,TAX,0,0
+Armed Police,LAWANDORDER,300,960
+Ban Sunday Shopping,ECONOMY,0,0
+BioFuel Subsidies,TRANSPORT,5,400
+Border Controls,FOREIGNPOLICY,10,280
+Bus Lanes,TRANSPORT,100,640
+Bus Subsidies,TRANSPORT,125,1552
+Carbon Tax,TAX,0,0
+Car Emissions Limits,ECONOMY,0,80
+Car Tax,TAX,0,0
+CCTV Cameras,LAWANDORDER,400,720
+Child Benefit,WELFARE,400,4320
+Childcare Provision,WELFARE,100,1520
+Citizenship Tests,FOREIGNPOLICY,10,50
+Clean Energy Subsidies,ECONOMY,590,1560
+Clean Fuel Subsidy,TRANSPORT,120,320
+Community Policing,LAWANDORDER,100,320
+Consumer Rights,ECONOMY,5,8
+Corporation Tax,TAX,0,0
+Creationism,PUBLICSERVICES,0,0
+Curfews,LAWANDORDER,80,200
+Death Penalty,LAWANDORDER,0,0
+Detention Without Trial,LAWANDORDER,2,2
+Disability benefit,WELFARE,50,420
+Faith School Subsidies,PUBLICSERVICES,180,1160
+Foreign Aid,FOREIGNPOLICY,0,2490
+Free Bus Passes,TRANSPORT,220,800
+Free Eye Tests,PUBLICSERVICES,200,240
+Free School Meals,PUBLICSERVICES,210,320
+Gambling,LAWANDORDER,0,0
+Gated Communities,LAWANDORDER,0,0
+Handgun Laws,LAWANDORDER,0,4
+Hybrid Cars Initiative,TAX,5,200
+ID Cards,LAWANDORDER,100,1200
+Import Tariffs,FOREIGNPOLICY,0,0
+Income Tax,TAX,0,0
+Inheritance Tax,TAX,0,0
+Intelligence Services,LAWANDORDER,900,1600
+Internet Censorship,LAWANDORDER,250,400
+Internet Tax,TAX,0,0
+Jury Trial,LAWANDORDER,200,200
+Labour Laws,ECONOMY,100,160
+Legal Aid,LAWANDORDER,10,80
+Legalize Prostitution,LAWANDORDER,0,0
+Luxury Goods Tax,TAX,0,0
+Married Tax Allowance,TAX,100,5200
+Maternity Leave,ECONOMY,0,0
+Micro-Generation Grants,TAX,100,1100
+Military Spending,FOREIGNPOLICY,2300,15600
+National Monorail System,TRANSPORT,2100,2320
+Mortgage Tax Relief,TAX,200,920
+Narcotics,LAWANDORDER,0,0
+National Service,FOREIGNPOLICY,100,80
+Organ Donation,PUBLICSERVICES,10,8
+Organic Farming Subsidy,ECONOMY,190,800
+Petrol Tax,TAX,0,0
+Phone Tapping,LAWANDORDER,10,40
+Plastic Bag Tax,ECONOMY,0,0
+Police Force,LAWANDORDER,300,2320
+Pollution Controls,ECONOMY,10,24
+Prisoner Tagging,LAWANDORDER,4,6.4
+Prisons,LAWANDORDER,100,1920
+Property Tax,TAX,0,0
+Public Libraries,PUBLICSERVICES,50,800
+Racial Profiling,LAWANDORDER,0,0
+Rail Subsidies,TRANSPORT,500,4800
+Recycling,ECONOMY,40,240
+Road Building,TRANSPORT,100,4100
+Rural Development Grants,ECONOMY,100,400
+Sales Tax,TAX,0,0
+Satellite Road Pricing,TRANSPORT,2500,2000
+Subsidised School Buses,TRANSPORT,250,520
+School Prayers,PUBLICSERVICES,0,0
+Science Funding,PUBLICSERVICES,85,520
+Small Business Grants,ECONOMY,100,4700
+Speed Cameras,LAWANDORDER,1,8
+State Health Service,PUBLICSERVICES,3000,14400
+State Housing,WELFARE,1000,6400
+State Pensions,WELFARE,2500,14000
+State Schools,PUBLICSERVICES,1000,7360
+Stem Cell Research,PUBLICSERVICES,20,160
+Tax Shelters,ECONOMY,100,400
+Technology Colleges,PUBLICSERVICES,185,670
+Technology Grants,ECONOMY,450,3000
+Telecommuting Initiative,TRANSPORT,110,500
+Tobacco Tax,TAX,0,0
+Toll Roads,TRANSPORT,0,0
+Unemployed Benefit ,WELFARE,500,5440
+University Grants,PUBLICSERVICES,200,2600
+Welfare Fraud Dept,WELFARE,0,0
+Winter Fuel Subsidy,WELFARE,500,2000
+Youth Club Subsidies,PUBLICSERVICES,12,220
+Green Home Standards,TAX,590,1560

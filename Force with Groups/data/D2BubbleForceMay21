@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8">
+		<title>D2 Bubble Diagram: Policies</title>
+		<script type="text/javascript" src="http://alignedleft.com/content/3.tutorials/10.d3/d3/d3.v3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+//Creating an empty array for use by Force Layout. We'll put data in it after.
+
+			
+			//Data (here is where we import some fun stuff)
+
+d3.json(costsdept.json, function(error,data) {
+	var nodes = {}
+	data.forEach(function(d) {
+		d.mincost = parseInt(d.mincost)
+		d.maxcost = parseInt(d.maxcost)
+		nodes[d] = { "policyname":d.PolicyName, "department":d.department, "mincost":d.mincost, "maxcost":d.maxcost}};
+	
+	var width = 960
+		height = 500
+	
+	var force = d3.layout.force()
+		.nodes(d3.values(nodes))
+		.size([width, height])
+		.charge(-300)
+		.on("tick", tick)
+		.start();
+	
+	var svg = d3.select("body").append("svg")
+		.attr("width", width)
+		.attr("height", height);
+	
+	// define the nodes
+	var node = svg.selectAll(".node")
+		.data(force.nodes())
+		.enter().append("g")
+		.attr("class", "node")
+		.call(force.drag);
+// add the nodes
+	node.append("circle")
+		.attr("r", (function(d) {return d.maxcost/10})
+		.attr("fill", (function(d) {;
+		
+		.style("fill", function(d) {
+                        var returnColor;
+                         if (d.Department === "ECONOMY") { returnColor = "green";} 
+                         else if (d.Department === "TAX") { returnColor = "purple";} 
+                         else if (d.Department === "FOREIGNPOLICY") { returnColor = "red"; }
+                         else if (d.Department === "WELFARE") { returnColor = "blue"; }
+                         else if (d.Department === "TRANSPORT") { returnColor = "orange"; }
+                         else if (d.Department === "PUBLICSERVICES") { returnColor = "pink"; }
+                         else if (d.Department === "LAWANDORDER") { returnColor = "black"; }                
+                        return returnColor;
+// add the text
+	node.append("text")
+	.attr("x", 12)
+	.attr("dy", ".35em")
+	.text(function(d) { return d.PolicyName + " (" + Str(d.maxcost) + ")" ; });		
+
+			
+};
+		</script>
+	</body>
+</html>

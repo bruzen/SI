@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<style>
+
+
+.node text {
+  pointer-events: none;
+  font: 10px arial;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    node, link
+    
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var force = d3.layout.force()
+    .gravity(.07)
+    .distance(50)
+    .charge(-75)
+    .size([width, height]);
+
+//now we define the nodes
+d3.json("costsFORCE.json", function(error, json) {
+  
+  nodes = json.nodes
+  links = json.nodes
+  
+  force
+      .nodes(nodes)
+      .links(links)
+      .start();
+
+  var node = svg.selectAll(".node")
+      .data(json.nodes)
+    .enter().append("g")
+      .attr("class", "node")
+      .call(force.drag)
+
+var link = svg.selectAll(".link")
+	.data(json, function(d) {return link.target = d.Department link.source = d.PolicyName;}
+	)
+	.enter()
+	.append("l")
+	.attr("class", "link")
+	.call(force.drag)
+
+
+//create a scale
+maxnum = d3.max(json.nodes, function(d) {return d.maxcost;})
+scale = d3.scale.sqrt()
+scale.domain([0, maxnum])
+scale.range([0,10])
+
+  node.append("circle")
+      .attr("fill", function(d) {
+                        var returnColor;
+                         if (d.Department === "ECONOMY") { returnColor = "green";} 
+                         else if (d.Department === "TAX") { returnColor = "purple";} 
+                         else if (d.Department === "FOREIGNPOLICY") { returnColor = "red"; }
+                         else if (d.Department === "WELFARE") { returnColor = "blue"; }
+                         else if (d.Department === "TRANSPORT") { returnColor = "orange"; }
+                         else if (d.Department === "PUBLICSERVICES") { returnColor = "pink"; }
+                         else if (d.Department === "LAWANDORDER") { returnColor = "yellow"; }                
+                        return returnColor;})
+      .attr("cx", -8)
+      .attr("cy", -8)
+      .attr("r", function(d) {return scale(d.maxcost) ;}); //d3.scale.sqrt(
+
+  node.append("text")
+      .attr("dx", 12)
+      .attr("dy", 1)
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.PolicyName +" (" + String(d.maxcost) + ")" });
+
+  force.on("tick", function() {
+    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  });
+});
+
+</script>
+</body>
+</html>
