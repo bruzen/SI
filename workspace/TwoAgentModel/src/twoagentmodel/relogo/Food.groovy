@@ -11,9 +11,13 @@ import repast.simphony.relogo.UtilityG;
 
 class Food extends BaseTurtle {
 	//energy value of the food
-	int energy
+	public int energy
 	//cost of the food
-	int money
+	public int money
 	
 	//default constructor
+	def Food(){
+		energy = 75
+		money = 3
+	}
 }

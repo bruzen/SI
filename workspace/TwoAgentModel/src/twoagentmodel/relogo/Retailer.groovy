@@ -10,5 +10,11 @@ import repast.simphony.relogo.Utility;
 import repast.simphony.relogo.UtilityG;
 
 class Retailer extends Person {
-
+	public List<Food> inventory = new ArrayList<Food>()
+	
+	public Retailer(){
+		for(int i = 0; i < 500; i++){
+			inventory.add(new Food())
+		}
+	}
 }

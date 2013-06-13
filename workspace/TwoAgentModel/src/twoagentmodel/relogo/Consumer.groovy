@@ -35,7 +35,7 @@ class Consumer extends Person {
 			}
 			else{
 				hungry = false
-				this.addEnergy(100)
+				this.buy(store, store.inventory)
 			}
 		}
 		else{

@@ -37,11 +37,14 @@ class Person extends BaseTurtle {
 	
 	//default constructor
 	public Person(){
-		this.energy = 100;
+		energy = 100;
+		money = 9999999;
 	}
 	
 	
-	def buy(Person seller, Food item){
+	public void buy(Person seller, List<Food> inventory){
+		Food item = inventory.get(0)
+		
 		int cost = item.money;
 		int energy = item.energy;
 		
@@ -53,6 +56,6 @@ class Person extends BaseTurtle {
 		this.money -= cost;
 		this.energy += energy;
 		seller.addMoney(cost);
-		item.die();
+		inventory.remove(item);
 	}
 }
